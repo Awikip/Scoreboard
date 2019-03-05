@@ -3,6 +3,7 @@ import Player, { IPlayer } from "./Player";
 import Title from "./Title";
 import "./ScoreBoard.css";
 import ChaosButton from "./ChaosButton";
+import AddPlayer from "./AddPlayer";
 
 const players: IPlayer[] = [
   {
@@ -66,6 +67,19 @@ export default class Scoreboard extends Component<{}, IScoreBoardState> {
     });
   };
 
+  public addPlayer = (name: string) => {
+    const newPlayer = {
+      id:
+        this.state.players.reduce((max, player): number => {
+          const id = Number(player.id);
+          return id > max ? id : max;
+        }, 0) + 1,
+      name,
+      score: 0
+    };
+    this.setState({ players: this.state.players.concat(newPlayer) });
+  };
+
   public runChaos = () => {
     this.setState({ chaosMonkey: true, clock: 0 });
 
@@ -101,6 +115,7 @@ export default class Scoreboard extends Component<{}, IScoreBoardState> {
         <ul>
           {players.sort((a, b) => b.score - a.score).map(this.renderPlayer)}
         </ul>
+        <AddPlayer addPlayer={this.addPlayer} />
         <ChaosButton onClick={this.runChaos} />
       </div>
     );
